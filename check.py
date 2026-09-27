@@ -34,6 +34,9 @@ def check(text):
     hook = [l for l in body if l.strip()][:2]
     if len("\n".join(hook)) > HOOK_LIMIT:
         warnings.append(f"hook is {len(chr(10).join(hook))} chars, gets cut near {HOOK_LIMIT}")
+    first_line = next((l for l in body if l.strip()), "")
+    if first_line.strip().endswith("?"):
+        warnings.append("hook opens with a question")
 
     for n, line in enumerate(body, 1):
         low = line.lower()
@@ -64,6 +67,8 @@ def selftest():
     assert {"hashtag", "emoji", "'thrilled'"} <= {w.split(": ")[-1] for w in warnings}, warnings
     assert check("our CTO said\n")[1] and not check("an octopus\n")[1]
     assert check("see deps.dev\n") == ([], ["line 1: bare domain, LinkedIn may turn it into a link"])
+    assert "hook opens with a question" in check("Ever wondered why?\n")[1]
+    assert "hook opens with a question" not in check(good)[1]
     print("selftest ok")
 
 
