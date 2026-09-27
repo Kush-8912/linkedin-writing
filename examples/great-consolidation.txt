@@ -1,0 +1,28 @@
+In 2018, installing Next.js pulled in 707 packages. Today it pulls in 49.
+Over the same time, Next.js itself grew from 0.4 MB to 148 MB.
+
+Everyone says node_modules keeps getting more bloated. I wanted to check, so I measured it. What I found was stranger than bloat.
+
+Dependency trees have been shrinking for years. The packages at the top of those trees have been getting enormous.
+
+Since early 2018:
+→ next: 707 packages installed → 49. The package itself grew 411x.
+→ webpack: 400 → 68 packages, while it grew from 0.9 MB to 7.7 MB
+→ react: 19 packages → 1
+
+After the left-pad incident in 2016, depending on hundreds of tiny packages from strangers started to look like a risk. The ecosystem didn't respond by writing less code. It moved the code inside fewer packages. Bundle a dependency into your own tarball and it disappears from the dependency graph. The graph gets shorter, and the install stays the same size.
+
+So the number everyone watches got better, and the thing it was supposed to measure didn't.
+
+That doesn't make consolidation a bad call. Fewer separately published packages means fewer things that can be compromised on their own, and that's a real security gain. Package count just stopped describing what you're installing, and most tools still report it as if it does.
+
+How I measured it: the npm registry records unpacked size and file count for every release, and Google's deps.dev resolves the dependency graph for any old version. Both are public. So the first commit already had eight years of data in it. It's now at 18,038 releases across 83 packages, and a GitHub Action adds new releases and redraws the charts every day.
+
+It's written in Python's standard library only, with no dependencies, which felt right for this repo.
+
+The README has caveats, like the fact that most of Next.js's size is prebuilt native binaries. Read those before quoting me.
+
+──────── first comment ────────
+github.com/shwetankg07/great-consolidation
+
+(attach the two charts from the repo, the trees chart and the sizes chart, as images)

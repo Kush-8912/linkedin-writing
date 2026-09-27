@@ -1,0 +1,30 @@
+Every RGB tool I tried on Linux said the command worked.
+My keyboard stayed on its factory rainbow anyway.
+
+My laptop is an Acer Predator Helios Neo 16S AI. On this generation, Acer moved the keyboard lighting off the WMI interface every Linux tool talks to, and onto a separate ENE KB5130 chip on i2c-HID. The firmware still accepts every WMI call and replies OK. Then it does nothing with it.
+
+The community had already cracked the basic HID packet (credit to the predator-sense project). I built kbrgb on top of that. One Python file, zero dependencies, no kernel module. 29 animated effects, per-zone colors, theme sync, restore on boot, and the chip's own built-in effects triggered with a single write, so the CPU does nothing while they run.
+
+While testing it I found two things nobody had written down.
+
+The brightness byte goes from 0 to 100, not 1 to 15. Tools that sent 15 as "max" were running everyone's LEDs at 15%. I reported it and predator-sense shipped a fix.
+
+The controller has no memory. Cut the power and it wakes up in rainbow wave again, which is why kbrgb restores your colors at boot.
+
+I also got one wrong in public. I said the all-zones mask was broken. Someone else's probe report didn't match mine, and when I went back, my test packet had gone out at brightness 15, so I was measuring two things at once. The retraction is still in PROTOCOL.md with a line through the original claim. I'd rather people see the mistake than have it disappear.
+
+Where it ended up:
+→ 16 stars, packaged on the AUR and on PyPI
+→ confirmed working by strangers on Nitro and Predator models, across Arch, CachyOS and Ubuntu
+→ 3 PRs merged into other Linux-on-Acer projects, including Predator key support in DAMX
+
+All of this started because I wanted to change a keyboard color.
+
+yay -S kbrgb
+pip install kbrgb
+
+Repo in the comments.
+
+──────── first comment ────────
+github.com/shwetankg07/kbrgb
+The protocol writeup, retraction included: github.com/shwetankg07/kbrgb/blob/main/PROTOCOL.md
